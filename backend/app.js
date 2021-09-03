@@ -1,4 +1,5 @@
 const express = require("express");
+require("dotenv").config({ path: "./config/.env" });
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
@@ -9,11 +10,16 @@ const app = express();
 
 mongoose
   .connect(
-    "mongodb+srv://laeti:Winter.123@cluster0.c3i2i.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true }
+    "mongodb+srv://" +
+      process.env.DB_ACCESS +
+      "@cluster0.c3i2i.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
   )
-  .then(() => console.log("Connexion à MongoDB réussie !"))
-  .catch(() => console.log("Connexion à MongoDB échouée !"));
+  .then(() => console.log("Connected to mongoDB"))
+  .catch((err) => console.log("Failed to connect to MongoDB", err));
 
 // Création du middleware contenant les headers de la réponse
 app.use((req, res, next) => {
