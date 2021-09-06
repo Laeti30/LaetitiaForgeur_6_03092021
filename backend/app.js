@@ -25,19 +25,25 @@ mongoose
 
 // Création du middleware contenant les headers de la réponse
 app.use((req, res, next) => {
-  // Pour accéder à l'API depuis n'importe quelle origine ("*")
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  // On ajoute les headers mentionnés aux requêtes envoyées vers notre API (Origin, X-Requested-With...)
+  res.setHeader("Access-Control-Allow-Origin", "*"); //Access the API from any origin
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-  );
-  // Méthodes autorisées (GET, POST...)
+  ); //Add headers to requests to the API
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  );
+  ); //Methods allowed
   next();
+});
+
+app.use(cors());
+app.get("/sauces/:id", function (req, res, next) {
+  res.json({ msg: "This is CORS-enabled for all origins!" });
+});
+
+app.listen(80, function () {
+  console.log("CORS-enabled web server listening on port 80");
 });
 
 // Pour transformer le corps de la requête en objet JavaScript utilisable
@@ -46,6 +52,6 @@ app.use(bodyParser.json());
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/api/auth", userRoutes);
-app.use("api/sauces", saucesRoutes);
+app.use("/api/sauces", saucesRoutes);
 
 module.exports = app;
