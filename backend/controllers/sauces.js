@@ -3,7 +3,7 @@ const Sauce = require("../models/Sauce");
 const fs = require("fs");
 
 exports.createSauce = (req, res, next) => {
-  const sauceObject = JSON.parse(req.body.Sauce);
+  const sauceObject = JSON.parse(req.body.sauce);
   delete sauceObject._id;
   // On crée une nouvelle sauce en utilisant notre schéma mongoose
   const sauce = new Sauce({
@@ -13,7 +13,7 @@ exports.createSauce = (req, res, next) => {
       req.file.filename
     }`,
   });
-  thing
+  sauce
     .save()
     .then(() => res.status(201).json({ message: "New sauce saved" }))
     .catch((error) => res.status(400).json({ error }));
@@ -25,7 +25,7 @@ exports.modifySauce = (req, res, next) => {
   // S'il n'existe pas, on fait une copie de req.body
   const sauceObject = req.file
     ? {
-        ...JSON.parse(req.body.thing),
+        ...JSON.parse(req.body.sauce),
         imageUrl: `${req.protocol}://${req.get("host")}/images/${
           req.file.filename
         }`,
@@ -36,7 +36,7 @@ exports.modifySauce = (req, res, next) => {
     { _id: req.params.id },
     { ...sauceObject, _id: req.params.id }
   )
-    .then(() => res.status(200).json({ message: "Sauce updated" }))
+    .then(() => res.status(200).json({ message: "Sauce updated !" }))
     .catch((error) => res.status(400).json({ error }));
 };
 
