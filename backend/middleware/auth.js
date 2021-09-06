@@ -7,12 +7,11 @@ module.exports = (req, res, next) => {
     const userId = decodedToken.userId;
     // Si le userId de la requête ne correspond pas à celui du token => Invalid user ID sinon on appelle next()
     if (req.body.userId && req.body.userId !== userId) {
-      throw "Invalid user ID";
+      throw "UserId non valable";
     } else {
       next();
     }
   } catch (error) {
-    // Si on reçoit une erreur, on l'envoie, sinon on envoie un message
-    res.status(401).json({ error: error || "Unauthenticated request" });
+    res.status(401).json({ error: error | "Unauthenticated request" });
   }
 };
