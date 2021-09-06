@@ -1,14 +1,13 @@
 const express = require("express");
-require("dotenv").config({ path: "./config/.env" });
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const path = require("path");
 const cors = require("cors");
+const helmet = require("helmet");
+require("dotenv").config({ path: "./config/.env" });
 
 const userRoutes = require("./routes/user");
 const saucesRoutes = require("./routes/sauces");
-
-const app = express();
 
 mongoose
   .connect(
@@ -22,6 +21,10 @@ mongoose
   )
   .then(() => console.log("Connected to mongoDB"))
   .catch((err) => console.log("Failed to connect to MongoDB", err));
+
+const app = express();
+
+app.use(helmet());
 
 // Création du middleware contenant les headers de la réponse
 app.use((req, res, next) => {
@@ -37,11 +40,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// CORS
 app.use(cors());
 app.get("/sauces/:id", function (req, res, next) {
   res.json({ msg: "This is CORS-enabled for all origins!" });
 });
-
 app.listen(80, function () {
   console.log("CORS-enabled web server listening on port 80");
 });
