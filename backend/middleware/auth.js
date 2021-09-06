@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+require("dotenv").config({ path: "./config/.env" });
 
 module.exports = (req, res, next) => {
   try {
@@ -7,7 +8,7 @@ module.exports = (req, res, next) => {
     const userId = decodedToken.userId;
     // Si le userId de la requête ne correspond pas à celui du token => Invalid user ID sinon on appelle next()
     if (req.body.userId && req.body.userId !== userId) {
-      throw "UserId non valable";
+      throw "Invalid userId";
     } else {
       next();
     }
