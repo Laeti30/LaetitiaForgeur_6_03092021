@@ -35,6 +35,7 @@ exports.modifySauce = (req, res, next) => {
         }`,
       }
     : { ...req.body };
+
   // 1 er argument, on récupère l'ancien objet - 2eme argument, notre nouvel objet
   Sauce.updateOne(
     { _id: req.params.id },
