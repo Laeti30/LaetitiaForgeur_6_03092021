@@ -1,12 +1,14 @@
 const Sauce = require("../models/Sauce");
-// Package de Node qui nous donne accès aux fonctions qui nous permettent de modifier le système de fichiers, y compris aux fonctions permettant de supprimer les fichiers.
+// Donne accès aux fonctions qui nous permettent de modifier le système de fichiers
 const fs = require("fs");
 
 exports.createSauce = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce);
+  // on supprime l'id envoyé par le frontend
   delete sauceObject._id;
   // On crée une nouvelle sauce en utilisant notre schéma mongoose
   const sauce = new Sauce({
+    // spread operator pour copier tous les éléments de sauceObject
     ...sauceObject,
     // On génère l'url de l'image
     imageUrl: `${req.protocol}://${req.get("host")}/images/${
@@ -14,8 +16,6 @@ exports.createSauce = (req, res, next) => {
     }`,
     likes: 0,
     dislikes: 0,
-    usersLiked: [" "],
-    usersDisliked: [" "],
   });
   sauce
     .save()
@@ -24,9 +24,7 @@ exports.createSauce = (req, res, next) => {
 };
 
 exports.modifySauce = (req, res, next) => {
-  // Avec un ternaire, on checke si dans la modification, on a un req.file (image).
-  // S'il existe, on récupère la chaine de caractères, on la parse en objet et on modifie l'imageURL
-  // S'il n'existe pas, on fait une copie de req.body
+  // On vérifie si on a une nouvelle image ou non
   const sauceObject = req.file
     ? {
         ...JSON.parse(req.body.sauce),
@@ -64,7 +62,6 @@ exports.deleteSauce = (req, res, next) => {
 exports.getOneSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => res.status(200).json(sauce))
-    // Error404 pour objet non trouvé
     .catch((error) => res.status(404).json({ error }));
 };
 
@@ -122,7 +119,6 @@ exports.likeDislikeSauce = (req, res, next) => {
               .catch((error) => res.status(400).json({ error }));
           }
         })
-        // Error404 pour objet non trouvé
         .catch((error) => res.status(404).json({ error }));
       break;
     default:

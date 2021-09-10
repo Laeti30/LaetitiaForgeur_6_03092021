@@ -1,8 +1,6 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const path = require("path");
-const cors = require("cors");
 const helmet = require("helmet");
 require("dotenv").config({ path: "./config/.env" });
 
@@ -10,15 +8,10 @@ const userRoutes = require("./routes/user");
 const saucesRoutes = require("./routes/sauces");
 
 mongoose
-  .connect(
-    "mongodb+srv://" +
-      process.env.DB_ACCESS +
-      "@cluster0.c3i2i.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
+  .connect(process.env.DB_ACCESS, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("Connected to mongoDB"))
   .catch((err) => console.log("Failed to connect to MongoDB", err));
 
@@ -40,18 +33,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// CORS
-app.use(cors());
-app.get("/sauces/:id", function (req, res, next) {
-  res.json({ msg: "This is CORS-enabled for all origins!" });
-});
-app.listen(80, function () {
-  console.log("CORS-enabled web server listening on port 80");
-});
+// Pour transformer le corps de la requête en objet JavaScript utilisable (remplace bodyParser)
+app.use(express.json());
 
-// Pour transformer le corps de la requête en objet JavaScript utilisable
-app.use(bodyParser.json());
-
+// Comment traiter les requêtes vers le route /image
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/api/auth", userRoutes);
