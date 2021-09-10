@@ -1,12 +1,17 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
+// Sécurité
 const helmet = require("helmet");
-require("dotenv").config({ path: "./config/.env" });
+const xssClean = require("xss-clean");
+const mongoSanitize = require("express-mongo-sanitize");
+require("dotenv").config();
 
+// Routes
 const userRoutes = require("./routes/user");
 const saucesRoutes = require("./routes/sauces");
 
+// Connexion à la bdd
 mongoose
   .connect(process.env.DB_ACCESS, {
     useNewUrlParser: true,
@@ -17,7 +22,12 @@ mongoose
 
 const app = express();
 
+// Sécurise Express en définissant divers en-têtes HTTP
 app.use(helmet());
+
+// Sanitize les user input
+app.use(xssClean());
+app.use(mongoSanitize());
 
 // Création du middleware contenant les headers de la réponse
 app.use((req, res, next) => {
